@@ -2,6 +2,7 @@
 import React from "react"
 import Navbar from "./Components/Navbar/Navbar"
 import Home from "./pages/Home/Home"
+import About from './pages/About/About'
 import Quiz from "./pages/Quiz/Quiz"
 import Register from './pages/Register/Register'
 import Login from './pages/Login/Login'
@@ -15,6 +16,8 @@ function App() {
         <Navbar />
         <Routes>
           <Route path='/' element={<Home/>}>
+          </Route>
+          <Route path='/About' element={<About/>}>
           </Route>
           <Route path='/Quiz' element={<Quiz/>}>
           </Route>
