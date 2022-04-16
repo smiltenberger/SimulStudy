@@ -1,8 +1,13 @@
-const Mongoose = require("mongoose")
+const Mongoose = require("mongoose");
 const teacherSchema = new Mongoose.Schema({
-  name: {
+  firstName: {
     type: String,
-    required: true,
+  },
+  lastName: {
+    type: String,
+  },
+  username: {
+    type: String,
   },
   email: {
     type: String,
@@ -10,5 +15,7 @@ const teacherSchema = new Mongoose.Schema({
   password: {
     type: String,
   },
-})
-Mongoose.model("teacher", teacherSchema)
+});
+const Teacher = Mongoose.model("Teacher", teacherSchema);
+
+module.exports = Teacher;

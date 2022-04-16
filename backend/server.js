@@ -1,9 +1,10 @@
-const express = require('../frontend/node_modules/@types/express')
+const express = require('express')
 const app = express();
-var bodyParser = require('../frontend/node_modules/@types/body-parser')
+var bodyParser = require('body-parser')
+const Teacher = require("./models/teacher");
 const mongoose = require('mongoose');
 var cors = require('cors')
-const port = 3000
+const port = 3001
 
 app.use(cors())
 
@@ -27,12 +28,6 @@ mongoose.connection.on("connected", (err, res) => {
   console.log("mongoose is connected")
 })
 
-const teachers = [
-    {id: 1, name: "Allen Smith"},
-    {id: 2, name: "John Smith"},
-    {id: 3, name: "Sally Smith"}
-]
-
 const students = [
     {id: 1, name: "John Jr Smith"},
     {id: 2, name: "Allen Jr Smith"},
@@ -44,23 +39,32 @@ app.get('/', (req, res) => {
 });
 
 // Get all teachers
-app.get('/teachers', (req, res) => {
+app.get('/teachers', async (req, res) => {
+    // use teacher model
+    const teachers = await Teacher.find(); // returns all the docs in the teachers collection
     res.json(teachers);
 });
 
 // Create a teacher
-app.post('/teachers', (req, res) => {
-    const newTeacher = req.body;
-    teachers.push(newTeacher);
-    res.json(teachers);
+app.post('/teachers', async (req, res) => {
+    const newTeacherData = req.body; // { name: "Adam", email: "email@email.com" }
+    const newTeacher = new Teacher(newTeacherData);
+    await newTeacher.save();
+    res.json(newTeacher);
 });
 
 // Get one teach by id
 // GET /teacher/2
-app.get('/teachers/:id', (req, res) => {
+app.get('/teachers/:id', async (req, res) => {
     const { id } = req.params;
-    const teacher = teachers.find(teacher => teacher.id == id);
-    res.json(teacher);
+    try {
+        const teacher = await Teacher.findById(id);
+        res.json(teacher);
+
+    } catch (error) {
+        res.status(404).json({error: "No teacher with that id"})
+    }
+    
 });
 
 
