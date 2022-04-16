@@ -1,11 +1,11 @@
-import { render } from "@testing-library/react";
-import React, { Component, useState } from "react";
+import React from "react";
+import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Quiz from "./Pages/Quiz/Quiz.js";
+import Navbar from "./Components/Navbar/Navbar";
+import About from "./Pages/About/About";
+import Home from "./Pages/Home/Home";
 import Login from "./Pages/Login/Login";
-import Dashboard from "./Pages/Dashboard/Dashboard";
-import Preferences from "./Pages/Preferences/Preferences";
+import Quiz from "./Pages/Quiz/Quiz.js";
 import Register from "./Pages/Register/Register.js";
 
 function setToken(userToken) {
@@ -25,16 +25,16 @@ function App() {
   // }
 
   return (
-    <div className="wrapper">
-      <h1>Application</h1>
-
+    <>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/preferences" element={<Preferences />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="login" element={<Login></Login>} />
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/About" element={<About />}></Route>
+        <Route path="/Quiz" element={<Quiz />}></Route>
+        <Route path="/Register" element={<Register />}></Route>
+        <Route path="/Login" element={<Login />}></Route>
       </Routes>
-    </div>
+    </>
   );
 }
 
