@@ -2,7 +2,7 @@ const Mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
-const teacherSchema = new Mongoose.Schema({
+const studentSchema = new Mongoose.Schema({
   firstName: {
     type: String,
   },
@@ -23,7 +23,7 @@ const teacherSchema = new Mongoose.Schema({
   },
 });
 
-teacherSchema.pre("save", function (next) {
+studentSchema.pre("save", function (next) {
   // Check if document is new or a new password has been set
   if (this.isNew || this.isModified("password")) {
     // Saving reference to this because of changing scopes
@@ -41,7 +41,7 @@ teacherSchema.pre("save", function (next) {
   }
 });
 
-teacherSchema.methods.isCorrectPassword = function (password, callback) {
+studentSchema.methods.isCorrectPassword = function (password, callback) {
   if (password == this.password) {
     callback(false, true);
   } else {
@@ -56,6 +56,6 @@ teacherSchema.methods.isCorrectPassword = function (password, callback) {
   // });
 };
 
-const Teacher = Mongoose.model("Teacher", teacherSchema);
+const Student = Mongoose.model("Student", studentSchema);
 
-module.exports = Teacher;
+module.exports = Student;
