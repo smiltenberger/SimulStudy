@@ -19,7 +19,11 @@ class Quiz extends React.Component{
                 answer: "2"           
             }
         }
+
+        fetch("http://localhost:3000/teachers")
+        .then(resp => console.log(resp));
     }
+
     correct = () => {
         this.setState({ name: 'correctAnswer'}); 
     }
