@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function NewQuiz() {
   const [title, setTitle] = useState("");
@@ -8,6 +8,8 @@ export default function NewQuiz() {
   const [choiceC, setChoiceC] = useState("");
   const [choiceD, setChoiceD] = useState("");
   const [correctChoice, setCorrectChoice] = useState("");
+  const [questions, setQuestions] = useState([]);
+  const counterRef = useRef(1);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -25,16 +27,31 @@ export default function NewQuiz() {
       body: JSON.stringify({
         pin,
         title,
-        questions: [
-          {
-            question,
-            choices: [choiceA, choiceB, choiceC, choiceD],
-            correctChoice,
-          },
-        ],
+        questions,
       }),
     });
+    setQuestions([]);
   };
+
+  function handleAddQuestion(event) {
+    event.preventDefault();
+    if (question === "") {
+      return;
+    }
+    const newQuestion = {
+      id: counterRef.current++,
+      question,
+      choices: [choiceA, choiceB, choiceC, choiceD],
+      correctChoice,
+    };
+    setQuestions([...questions, newQuestion]);
+    setQuestion("");
+    setChoiceA("");
+    setChoiceB("");
+    setChoiceC("");
+    setChoiceD("");
+    setCorrectChoice("");
+  }
 
   return (
     <div>
@@ -51,7 +68,7 @@ export default function NewQuiz() {
         </div>
 
         <div>
-          <label>Question</label>
+          <label>{"Question " + counterRef.current}</label>
           <br />
           <input
             value={question}
@@ -104,6 +121,9 @@ export default function NewQuiz() {
           />
         </div>
 
+        <button onClick={handleAddQuestion}>Add question</button>
+        <br></br>
+        <br></br>
         <input type="submit" />
       </form>
     </div>
