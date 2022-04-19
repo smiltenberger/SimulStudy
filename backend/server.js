@@ -45,6 +45,16 @@ app.get("/quizzes/:id", async (req, res) => {
   }
 });
 
+app.get("/quizzes/by-pin/:pin", async (req, res) => {
+  const { pin } = req.params;
+  try {
+    const quiz = await Quiz.findOne({ pin: pin });
+    res.json(quiz);
+  } catch (error) {
+    res.status(404).json({ error: "No quiz with that pin" });
+  }
+});
+
 // Get all quizzes
 app.get("/quizzes", async (req, res) => {
   // use quiz model
