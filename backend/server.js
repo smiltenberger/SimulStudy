@@ -2,10 +2,12 @@ const express = require("express");
 const app = express();
 var bodyParser = require("body-parser");
 const Teacher = require("./models/teacher");
+const Student = require("./models/student");
 const Quiz = require("./models/quiz");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 var cors = require("cors");
+const { rawListeners } = require("./models/teacher");
 const port = 3001;
 
 const secret = "mysecretsshhh";
@@ -24,16 +26,6 @@ mongoose.connection.on("error", (err) => {
 });
 mongoose.connection.on("connected", (err, res) => {
   console.log("mongoose is connected");
-});
-
-const students = [
-  { id: 1, name: "John Jr Smith" },
-  { id: 2, name: "Allen Jr Smith" },
-  { id: 3, name: "Sally Jr Smith" },
-];
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
 });
 
 app.post("/quizzes", async (req, res) => {
@@ -72,7 +64,11 @@ app.post("/teachers", async (req, res) => {
   const newTeacherData = req.body; // { name: "Adam", email: "email@email.com" }
   const newTeacher = new Teacher(newTeacherData);
   await newTeacher.save();
-  res.json(newTeacher);
+  const payload = { username: newTeacher.username };
+  const token = jwt.sign(payload, secret);
+  console.log(token);
+
+  res.status(201).json({ token: token });
 });
 
 // Get one teach by id
@@ -88,28 +84,63 @@ app.get("/teachers/:id", async (req, res) => {
 });
 
 // Create a student
-app.post("/students", (req, res) => {
+/*app.post("/students", (req, res) => {
   const newStudent = req.body;
   students.push(newStudent);
   res.json(students);
 });
+*/
+
+// Get all students
+app.get("/students", async (req, res) => {
+  // use teacher model
+  const students = await Student.find(); // returns all the docs in the teachers collection
+  res.json(students);
+});
+
+// Create a student
+app.post("/students", async (req, res) => {
+  const newStudentData = req.body; // { name: "Adam", email: "email@email.com" }
+  const newStudent = new Student(newStudentData);
+  await newStudent.save();
+  const payload = { username: newStudent.username };
+  const token = jwt.sign(payload, secret);
+  console.log(token);
+
+  res.status(201).json({ token: token });
+});
+
+// Get one student by id
+// GET /student/2
+app.get("/students/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const student = await Student.findById(id);
+    res.json(student);
+  } catch (error) {
+    res.status(404).json({ error: "No student with that id" });
+  }
+});
 
 // Login
 app.use("/login", (req, res) => {
-  const { username, password } = req.body;
-  Teacher.findOne({ username }, function (err, teacher) {
+  const { username, password, userType } = req.body;
+  console.log(userType);
+  const UserType = userType === "student" ? Student : Teacher;
+  UserType.findOne({ username }, function (err, user) {
     if (err) {
       console.error(err);
       res.status(500).json({
         error: "Internal error please try again",
       });
-    } else if (!teacher) {
+    } else if (!user) {
       res.status(401).json({
         error: "Incorrect username or password",
       });
     } else {
-      teacher.isCorrectPassword(password, function (err, same) {
+      user.isCorrectPassword(password, function (err, same) {
         if (err) {
+          console.error(err);
           res.status(500).json({
             error: "Internal error please try again",
           });
