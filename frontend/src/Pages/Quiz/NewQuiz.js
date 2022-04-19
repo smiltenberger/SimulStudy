@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function NewQuiz() {
   const [title, setTitle] = useState("");
@@ -10,6 +11,7 @@ export default function NewQuiz() {
   const [correctChoice, setCorrectChoice] = useState("");
   const [questions, setQuestions] = useState([]);
   const counterRef = useRef(1);
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -18,6 +20,12 @@ export default function NewQuiz() {
     for (let index = 0; index < 8; index++) {
       pin += Math.floor(Math.random() * 10);
     }
+    const newQuestion = {
+      id: counterRef.current++,
+      question,
+      choices: [choiceA, choiceB, choiceC, choiceD],
+      correctChoice,
+    };
 
     fetch("/quizzes", {
       method: "POST",
@@ -27,10 +35,18 @@ export default function NewQuiz() {
       body: JSON.stringify({
         pin,
         title,
-        questions,
+        questions: questions.length === 0 ? [newQuestion] : questions,
       }),
+    }).then(() => {
+      setQuestions([]);
+      setQuestion("");
+      setChoiceA("");
+      setChoiceB("");
+      setChoiceC("");
+      setChoiceD("");
+      setCorrectChoice("");
+      navigate("/");
     });
-    setQuestions([]);
   };
 
   function handleAddQuestion(event) {
@@ -38,6 +54,10 @@ export default function NewQuiz() {
     if (question === "") {
       return;
     }
+    addQuestion();
+  }
+
+  function addQuestion() {
     const newQuestion = {
       id: counterRef.current++,
       question,

@@ -41,7 +41,7 @@ export default function Register() {
   return (
     <div className="login-wrapper">
       <h1>Please Register</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-wrapper-inner">
         <p>Student or Teacher</p>
         <label>
           <p>Student</p>
@@ -106,7 +106,9 @@ export default function Register() {
           />
         </label>
         <div>
-          <button type="submit">Submit</button>
+          <button type="submit" className="submit-button">
+            Submit
+          </button>
         </div>
       </form>
     </div>

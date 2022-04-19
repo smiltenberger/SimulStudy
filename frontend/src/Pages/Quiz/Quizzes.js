@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Container, Row, Col, Form, Button } from "react-bootstrap";
 export default function Quizzes() {
   const [pin, setPin] = useState();
   useEffect(() => {}, []);
@@ -19,16 +20,26 @@ export default function Quizzes() {
   };
 
   return (
-    <div>
-      <h1>Take Quiz</h1>
+    <Container className="d-flex justify-content-center">
+      <Row>
+        <Col className="text-center">
+          <h1>Take Quiz</h1>
 
-      <h2>Enter Pin</h2>
+          <h2>Enter Pin</h2>
 
-      <form onSubmit={handleSubmit}>
-        <input value={pin} onChange={(event) => setPin(event.target.value)} />
-        <br />
-        <input type="submit" />
-      </form>
-    </div>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group>
+              <input
+                value={pin}
+                onChange={(event) => setPin(event.target.value)}
+              />
+            </Form.Group>
+
+            <br />
+            <Button type="submit">Submit</Button>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   );
 }

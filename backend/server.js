@@ -4,6 +4,7 @@ var bodyParser = require("body-parser");
 const Teacher = require("./models/teacher");
 const Student = require("./models/student");
 const Quiz = require("./models/quiz");
+const QuizResult = require("./models/quiz-result");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 var cors = require("cors");
@@ -28,8 +29,26 @@ mongoose.connection.on("connected", (err, res) => {
   console.log("mongoose is connected");
 });
 
+app.get("/quiz-results/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const quizResult = await QuizResult.findById(id);
+    res.json(quizResult);
+  } catch (error) {
+    res.status(404).json({ error: "No quiz result with that id" });
+  }
+});
+
+app.post("/quiz-results", async (req, res) => {
+  const newQuizResultData = req.body;
+  delete newQuizResultData._id;
+  const newQuizResult = new QuizResult(newQuizResultData);
+  await newQuizResult.save();
+  res.json(newQuizResult);
+});
+
 app.post("/quizzes", async (req, res) => {
-  const newQuizData = req.body; // { name: "Adam", email: "email@email.com" }
+  const newQuizData = req.body;
   const newQuiz = new Quiz(newQuizData);
   await newQuiz.save();
   res.json(newQuiz);

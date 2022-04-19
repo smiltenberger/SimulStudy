@@ -35,7 +35,7 @@ export default function Login({ setToken }) {
   return (
     <div className="login-wrapper">
       <h1>Please Log In</h1>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="login-wrapper-inner">
         <p>Student or Teacher</p>
         <label>
           <p>Student</p>
@@ -76,7 +76,9 @@ export default function Login({ setToken }) {
           />
         </label>
         <div>
-          <button type="submit">Submit</button>
+          <button type="submit" className="submit-button">
+            Submit
+          </button>
         </div>
         {/* <Link to='register'>
           {"Don't have an account? Register here!"}
