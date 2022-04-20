@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const app = express();
 var bodyParser = require("body-parser");
@@ -16,6 +17,11 @@ const secret = "mysecretsshhh";
 app.use(cors());
 
 // parse application/json
+app.use(
+  express.static(
+    path.resolve(__dirname, "../frontend/build", "../frontend/build")
+  )
+);
 app.use(bodyParser.json());
 
 // "DB"
