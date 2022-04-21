@@ -3,6 +3,9 @@
 An online quiz web app that uses React's `create-react-app` for the UI
 and Express with MongoDB for the API layer.
 
+## Link
+https://simulstudy.herokuapp.com/
+
 ## Local .env Setup
 
 Rename .env-example file to .env and provide the values for unspecified keys
