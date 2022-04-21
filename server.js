@@ -12,20 +12,14 @@ var cors = require("cors");
 const { rawListeners } = require("./models/teacher");
 const port = 3001;
 
-const secret = "mysecretsshhh";
-
 app.use(cors());
 
 // parse application/json
-app.use(
-  express.static(
-    path.resolve(__dirname, "../frontend/build", "../frontend/build")
-  )
-);
+app.use(express.static(path.resolve(__dirname, "./frontend/build")));
 app.use(bodyParser.json());
 
 // "DB"
-mongoose.connect("mongodb://localhost:27017/SimulStudy", {
+mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: "true",
 });
 mongoose.connection.on("error", (err) => {
@@ -100,7 +94,7 @@ app.post("/teachers", async (req, res) => {
   const newTeacher = new Teacher(newTeacherData);
   await newTeacher.save();
   const payload = { username: newTeacher.username };
-  const token = jwt.sign(payload, secret);
+  const token = jwt.sign(payload, process.env.JWT_SECRET);
   console.log(token);
 
   res.status(201).json({ token: token });
@@ -139,7 +133,7 @@ app.post("/students", async (req, res) => {
   const newStudent = new Student(newStudentData);
   await newStudent.save();
   const payload = { username: newStudent.username };
-  const token = jwt.sign(payload, secret);
+  const token = jwt.sign(payload, process.env.JWT_SECRET);
   console.log(token);
 
   res.status(201).json({ token: token });
@@ -186,7 +180,7 @@ app.use("/login", (req, res) => {
         } else {
           // Issue token
           const payload = { username };
-          const token = jwt.sign(payload, secret);
+          const token = jwt.sign(payload, process.env.JWT_SECRET);
           res.status(200).json({ token: token });
         }
       });
